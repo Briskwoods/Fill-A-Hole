@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private CharacterController m_playerController;
     [SerializeField] private float m_speed;
+    [SerializeField] private Animator m_playerAnim;
     
     public float PlatformWidth = 2.7f;
     public float MaxFingerDistance = 250f;
@@ -29,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         m_playerController.Move(Vector3.forward * m_speed * Time.deltaTime);
+        m_playerAnim.SetBool("Run", true);
 
         if (Input.GetMouseButtonDown(0))
         {
