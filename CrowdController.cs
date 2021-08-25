@@ -9,14 +9,27 @@ public class CrowdController : MonoBehaviour
     [SerializeField] private Animator m_player;             // Player Animator 
     [SerializeField] private Animator m_crowdEntity;        // Crowd Entity Animator
 
-    [SerializeField] private Transform m_leader;            // Point where the entity crowds to
+    [SerializeField] private GameObject m_self;
+ 
+    public Transform m_leader;                              // Point where the entity crowds to
     public float m_spaceBetween = 1.5f;                     // Distance between crowd entity and chosen leader.
+
+    public bool m_activeState = true;
+
+
+    void Start()
+    {
+        m_self = this.gameObject;
+        m_self.GetComponent<SlerpScript>().sunrise = m_self.transform;
+
+        m_player = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
+    }
 
     // Update is called once per frame
     void Update()
     {
         // Set the crowd entity to copy player animations when Running
-        switch(m_player.GetBool("Run")){
+        switch(m_player.GetBool("Run") && m_activeState == true){
             case true:
                 m_crowdEntity.SetBool("Run", true);
                 break;
@@ -26,13 +39,23 @@ public class CrowdController : MonoBehaviour
         }
 
         // Set the crowd entity to copy player animations when Jumping
-        switch (m_player.GetBool("Jump"))
+        switch (m_player.GetBool("Jump") && m_activeState == true)
         {
             case true:
                 m_crowdEntity.SetBool("Jump", true);
                 break;
             case false:
                 m_crowdEntity.SetBool("Jump", false);
+                break;
+        }
+
+        // Set the crowd entity to copy player animations when Jumping
+        switch (m_activeState == false)
+        {
+            case true:
+                m_crowdEntity.SetBool("Run", false);
+                break;
+            case false:
                 break;
         }
 
@@ -46,5 +69,18 @@ public class CrowdController : MonoBehaviour
             case false:
                 break;
         }
+
+        if (m_activeState == false)
+        {
+                Delete();
+              
+        }
+
+
     }
+        IEnumerator Delete()
+        {
+            yield return new WaitForSeconds(3f);
+            Destroy(gameObject);
+        }
 }
